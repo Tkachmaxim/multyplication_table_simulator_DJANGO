@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Тренажер таблицы умножения</title>
+</head>
+<body>
+<h1>Пример № {{number_task}}</h1>
+<h1>{{a}} {{d}} {{b}}  = </h1>
+    <form method="post" action=''>
+         {% csrf_token %}
+        <input autofocus name="answer">
+        <input type="submit" value="Ответить">
+    </form>
+{% if messages %}
+        {% for message in messages %}
+        <p class="alert alert-info" role="alert">{{message}}</p>
+        {% endfor %}
+        {% endif %}
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Тренажер таблицы умножения</title>
+</head>
+<body>
+<h1>Сколько примеров?</h1>
+
+<form method="post" action=''>
+    {% csrf_token %}
+    <input autofocus name="number" height="30">
+    <input type="submit" value="Отправить">
+      <p>Выберите что-то одно:</p>
+
+  <div>
+    <input type="radio" id="contactChoice1"
+     name="difficult" value="multi">
+    <label for="contactChoice1">Только умножение</label>
+      <br>
+    <input type="radio" id="contactChoice2"
+     name="difficult" value="divide">
+    <label for="contactChoice2">Умножение и деление</label>
+    <br>
+    <input type="radio" id="contactChoice3"
+     name="difficult" value="multi_divide">
+    <label for="contactChoice3">Только деление</label>
+</form>
+
+
+
+</body>
+</html>
