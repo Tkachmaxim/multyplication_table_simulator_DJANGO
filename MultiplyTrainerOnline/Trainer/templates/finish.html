@@ -7,9 +7,9 @@
 </head>
 </head>
 <body>
-<h1>Упражнение закончено. <br>  <br> Твой результат:</h1>
+<h1>Упражнение закончено. <br>  <br> Всего примеров: {{result}}</h1>
 <br>
-<h1>Не праильных: {{result}}</h1>
-<a href={% url 'work_on_mistakes' %} class="btn btn-info mb-2">Работа над ошибками</a>
+<h1>Не праильных: {{mistakes}}</h1>
+<a href={% url 'finish' %} class="btn btn-info mb-2">Работа над ошибками</a>
 </body>
 </html>
