@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Упражнение закончено</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
 </head>
 <body>
 <h1>Упражнение закончено. <br>  <br> Твой результат:</h1>
+<br>
+<h1>Не праильных: {{result}}</h1>
+<a href={% url 'work_on_mistakes' %} class="btn btn-info mb-2">Работа над ошибками</a>
 </body>
 </html>
