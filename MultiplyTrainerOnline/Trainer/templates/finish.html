@@ -9,7 +9,14 @@
 <body>
 <h1>Упражнение закончено. <br>  <br> Всего примеров: {{result}}</h1>
 <br>
-<h1>Не праильных: {{mistakes}}</h1>
+<h1>Не правильных: {{mistakes}}</h1>
+{% if button %}
+<a href={% url 'enter_result' %} class="btn btn-info mb-2">Ввести результаты</a>
+{% else %}
 <a href={% url 'trainer_app' %} class="btn btn-info mb-2">Работа над ошибками</a>
+{% endif %}
+<p>
+<img src="{{image}}" width="300" height="300">
+</p>
 </body>
 </html>
