@@ -7,8 +7,9 @@ from Trainer.forms import MyResultForm
 
 
 
-
 class Game(object):
+    permission=True
+
     def __init__(self, number_of_tasks, action):
         self.tasks=modulle.choice_number(number_of_tasks, action)
         self.total=number_of_tasks
@@ -18,70 +19,74 @@ class Game(object):
         self.total_for_save=0
         self.mistakes_for_save=0
         self.mistakes_for_save_example=[]
+        self.a = 0
+        self.b = 0
+        self.result = 0
 
 class Start(View):
     def get(self, request):
-        if game.total>0:
-            return render(request, 'trainer_app.html', {'a': TrainerApp.a, 'b': TrainerApp.b,
-                                                        'result': TrainerApp.result,
-                                                        'number_task': game.number_example})
+        if Game.permission==False:
+            return render(request,'trainer_app.html', {'a': game.a, 'b': game.b,
+                                                   'result': game.result, 'number_task': game.number_example, 'tasks_deb':game.tasks})
         return render(request, 'index.html')
 
     def post(self, request):
-        global game
-        if game.total==0:
+        if Game.permission==True:
+        #if game.total==0:
             if (request.POST.get('number')).isdigit() and int(request.POST.get('number')) > 0 and request.POST.get('difficult') != None:
                     number_of_tasks=int(request.POST.get('number'))
                     action=request.POST.get('difficult')
+                    global game
                     game=Game(number_of_tasks=number_of_tasks, action=action)
                     game.session+=1
+                    Game.permission=False
                     return redirect('trainer_app')
             else:
                 return redirect('start')
         else:
             return redirect('trainer_app')
-        return render(request, 'index.html')
+        #return render(request, 'index.html')
 
 
 class TrainerApp(View):
-    a= int
-    b= int
-    result= int
+    global game
+
 
     def get(self, request):
         if game.number_example==game.total:
-            game.mistakes = 0
-            game.total = len(game.tasks)
-            game.number_example = 0
             return redirect('finish')
 
         try:
-            TrainerApp.a, TrainerApp.b, TrainerApp.result = (game.tasks.pop()).values()
+            game.a, game.b, game.result = (game.tasks.pop()).values()
             game.number_example+=1
         except IndexError:
             return render(request, 'finish.html', {'result': game.total, 'mistakes': game.mistakes})
-        return render(request,'trainer_app.html', {'a': TrainerApp.a, 'b': TrainerApp.b,
-                                                   'result': TrainerApp.result, 'number_task': game.number_example, 'tasks_deb':game.tasks})
+        return render(request,'trainer_app.html', {'a': game.a, 'b': game.b,
+                                                   'result': game.result, 'number_task': game.number_example, 'tasks_deb':game.tasks})
 
     def post(self, request):
         try:
-            if int(request.POST.get('answer')) == TrainerApp.result:
+            if int(request.POST.get('answer')) == game.result:
                 messages.success(request, 'ПРАВИЛЬНО')
 
-            elif int(request.POST.get('answer')) != TrainerApp.result:
+            elif int(request.POST.get('answer')) != game.result:
                 messages.error(request, 'НЕ ПРАВИЛЬНО')
                 game.mistakes += 1
-                game.tasks.insert(0,{'a':TrainerApp.a, 'b':TrainerApp.b, 'result':TrainerApp.result})
+                game.tasks.insert(0,{'a':game.a, 'b':game.b, 'result':game.result})
 
         except ValueError:
             return redirect(request.path)
+
+
 
         return redirect(request.path)
 
 class Finish(View):
     def get(self, request):
+
         result, mistakes = game.total, game.mistakes
-        print(mistakes, result)
+
+
         if mistakes/result<=0.2:
             image='https://upload.wikimedia.org/wikipedia/commons/4/4f/Tesla_Model_S_02_2013.jpg'
         elif 0.2<mistakes/result<0.4:
@@ -115,11 +120,10 @@ class Enter_Result(View):
             result.save()
             print('this is taks', game.tasks)
             game.total=0
+            Game.permission=True
         return redirect('start')
 
 
-
-game=Game(0,0)
 
 
 
