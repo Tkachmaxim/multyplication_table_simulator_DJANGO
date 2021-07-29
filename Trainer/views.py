@@ -7,9 +7,6 @@ from Trainer.forms import MyResultForm
 
 
 
-#number_of_tasks: int=0
-#tasks=[]
-
 
 class Game(object):
     def __init__(self, number_of_tasks, action):
@@ -64,7 +61,7 @@ class TrainerApp(View):
         except IndexError:
             return render(request, 'finish.html', {'result': game.total, 'mistakes': game.mistakes})
         return render(request,'trainer_app.html', {'a': TrainerApp.a, 'b': TrainerApp.b,
-                                                   'result': TrainerApp.result, 'number_task': game.number_example})
+                                                   'result': TrainerApp.result, 'number_task': game.number_example, 'tasks_deb':game.tasks})
 
     def post(self, request):
         try:
@@ -116,6 +113,7 @@ class Enter_Result(View):
             result.mistakes=game.mistakes_for_save
             result.examples_of_mistakes=game.mistakes_for_save_example
             result.save()
+            print('this is taks', game.tasks)
             game.total=0
         return redirect('start')
 
