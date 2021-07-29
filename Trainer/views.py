@@ -7,8 +7,9 @@ from Trainer.forms import MyResultForm
 
 
 
-class Game(object):
+class Game:
     permission=True
+
 
     def __init__(self, number_of_tasks, action):
         self.tasks=modulle.choice_number(number_of_tasks, action)
@@ -24,6 +25,7 @@ class Game(object):
         self.result = 0
 
 class Start(View):
+
     def get(self, request):
         if Game.permission==False:
             return render(request,'trainer_app.html', {'a': game.a, 'b': game.b,
@@ -49,10 +51,11 @@ class Start(View):
 
 
 class TrainerApp(View):
-    global game
+
 
 
     def get(self, request):
+        global game
         if game.number_example==game.total:
             return redirect('finish')
 
