@@ -9,7 +9,7 @@ from Trainer.forms import MyResultForm
 
 #number_of_tasks: int=0
 #tasks=[]
-game=object
+
 
 class Game(object):
     def __init__(self, number_of_tasks, action):
@@ -24,20 +24,26 @@ class Game(object):
 
 class Start(View):
     def get(self, request):
+        if game.total>0:
+            return render(request, 'trainer_app.html', {'a': TrainerApp.a, 'b': TrainerApp.b,
+                                                        'result': TrainerApp.result,
+                                                        'number_task': game.number_example})
         return render(request, 'index.html')
 
     def post(self, request):
-        if (request.POST.get('number')).isdigit() and int(request.POST.get('number')) > 0 and request.POST.get('difficult') != None:
-                #global number_of_tasks, tasks
-                number_of_tasks=int(request.POST.get('number'))
-                action=request.POST.get('difficult')
-                print(action)
-                global game
-                game=Game(number_of_tasks=number_of_tasks, action=action)
-                game.session+=1
-                return redirect('trainer_app')
+        global game
+        print()
+        if game.total==0:
+            if (request.POST.get('number')).isdigit() and int(request.POST.get('number')) > 0 and request.POST.get('difficult') != None:
+                    number_of_tasks=int(request.POST.get('number'))
+                    action=request.POST.get('difficult')
+                    game=Game(number_of_tasks=number_of_tasks, action=action)
+                    game.session+=1
+                    return redirect('trainer_app')
+            else:
+                return redirect('start')
         else:
-            return redirect('start')
+            return redirect('trainer_app')
         return render(request, 'index.html')
 
 
@@ -65,14 +71,10 @@ class TrainerApp(View):
             if int(request.POST.get('answer')) == TrainerApp.result:
                 messages.success(request, 'ПРАВИЛЬНО')
 
-
             elif int(request.POST.get('answer')) != TrainerApp.result:
                 messages.error(request, 'НЕ ПРАВИЛЬНО')
                 game.mistakes += 1
                 game.tasks.insert(0,{'a':TrainerApp.a, 'b':TrainerApp.b, 'result':TrainerApp.result})
-
-
-
 
         except ValueError:
             return redirect(request.path)
@@ -82,23 +84,24 @@ class TrainerApp(View):
 class Finish(View):
     def get(self, request):
         result, mistakes = game.total, game.mistakes
+        print(mistakes, result)
         if mistakes/result<=0.2:
             image='https://upload.wikimedia.org/wikipedia/commons/4/4f/Tesla_Model_S_02_2013.jpg'
         elif 0.2<mistakes/result<0.4:
             image='https://autoreview.ru/images/Article/1609/Article_160932_860_575.jpg'
         else:
             image='https://auto.ironhorse.ru/wp-content/uploads/1977/11/412.jpg'
-        if mistakes==0 and game.session==1:
-            return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':True})
-        if game.session==1:
+        if mistakes==0:
             game.total_for_save = game.total
             game.mistakes_for_save = game.mistakes
             game.mistakes_for_save_example = tuple(game.tasks)
+            return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':True})
+        elif mistakes>0 and game.session==1:
             game.tasks*=5
             game.session+=1
         random.shuffle(game.tasks)
         game.total, game.mistakes, game.number_example = len(game.tasks), 0, 0
-        return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image})
+        return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':False})
 
 class Enter_Result(View):
     def get(self, request):
@@ -113,11 +116,12 @@ class Enter_Result(View):
             result.mistakes=game.mistakes_for_save
             result.examples_of_mistakes=game.mistakes_for_save_example
             result.save()
+            game.total=0
         return redirect('start')
 
 
 
-
+game=Game(0,0)
 
 
 

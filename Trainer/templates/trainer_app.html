@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <title>Тренажер таблицы умножения</title>
-</head>
+{% extends 'base.html'%}
+{% block trainer %}
 <body>
 <h1>Пример № {{number_task}}</h1>
 <h1>{{a}} = </h1>
     <form method="post" action=''>
          {% csrf_token %}
-        <input autofocus name="answer">
+        <input autofocus name="answer" type="number">
         <input type="submit" value="Ответить">
     </form>
 {% if messages %}
@@ -19,3 +15,4 @@
         {% endif %}
 </body>
 </html>
+{% endblock %}

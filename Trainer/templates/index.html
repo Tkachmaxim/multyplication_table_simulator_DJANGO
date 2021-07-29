@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <title>Тренажер таблицы умножения</title>
-</head>
-<body>
+{% extends 'base.html'%}
+{% block trainer %}
+
 <h1>Сколько примеров?</h1>
 
 <form method="post" action=''>
@@ -26,8 +22,9 @@
      name="difficult" value="divide">
     <label for="contactChoice3">Только деление</label>
 </form>
-
-
-
 </body>
+
+{% endblock %}
+
+
 </html>

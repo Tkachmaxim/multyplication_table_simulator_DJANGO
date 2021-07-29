@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Отправьте свои результаты</title>
-</head>
+{% extends 'base.html'%}
+{% block trainer %}
 <body>
 <form method="post">
   {{form.as_p}}
@@ -12,3 +8,4 @@
 </form>
 </body>
 </html>
+{% endblock %}
