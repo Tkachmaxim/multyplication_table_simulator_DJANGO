@@ -9,6 +9,7 @@ from Trainer.forms import MyResultForm
 
 class Game:
     permission=True
+    class_counter=0
 
 
     def __init__(self, number_of_tasks, action):
@@ -42,6 +43,7 @@ class Start(View):
                     game=Game(number_of_tasks=number_of_tasks, action=action)
                     game.session+=1
                     Game.permission=False
+                    Game.class_counter+=1
                     return redirect('trainer_app')
             else:
                 return redirect('start')
@@ -65,7 +67,7 @@ class TrainerApp(View):
         except IndexError:
             return render(request, 'finish.html', {'result': game.total, 'mistakes': game.mistakes})
         return render(request,'trainer_app.html', {'a': game.a, 'b': game.b,
-                                                   'result': game.result, 'number_task': game.number_example, 'tasks_deb':game.tasks})
+                                                   'result': game.result, 'number_task': game.number_example, 'tasks_deb':game.tasks, 'counter':Game.class_counter })
 
     def post(self, request):
         try:
