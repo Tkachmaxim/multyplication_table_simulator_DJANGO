@@ -44,3 +44,6 @@ def set_divide():
     task_ = str(a * b) + ':' + str(b)
     gen_task = dict(a=task_, b=b, result=a)
     return gen_task
+
+if __name__=='__main__':
+    pass

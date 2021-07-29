@@ -13,7 +13,9 @@ class Game:
 
 
     def __init__(self, number_of_tasks, action):
-        self.tasks=modulle.choice_number(number_of_tasks, action)
+        self.number_of_tasks=number_of_tasks
+        self.action=action
+        self.tasks=[]
         self.total=number_of_tasks
         self.number_example=0
         self.mistakes= 0
@@ -24,6 +26,10 @@ class Game:
         self.a = 0
         self.b = 0
         self.result = 0
+
+    def generate_task(self):
+        self.tasks=modulle.choice_number(self.number_of_tasks, self.action)
+        return self.tasks
 
 class Start(View):
 
@@ -41,6 +47,7 @@ class Start(View):
                     action=request.POST.get('difficult')
                     global game
                     game=Game(number_of_tasks=number_of_tasks, action=action)
+                    game.generate_task()
                     game.session+=1
                     Game.permission=False
                     Game.class_counter+=1
@@ -53,8 +60,6 @@ class Start(View):
 
 
 class TrainerApp(View):
-
-
 
     def get(self, request):
         global game
