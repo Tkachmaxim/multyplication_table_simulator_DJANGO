@@ -29,7 +29,6 @@ class Start(View):
 
     def post(self, request):
         global game
-        print()
         if game.total==0:
             if (request.POST.get('number')).isdigit() and int(request.POST.get('number')) > 0 and request.POST.get('difficult') != None:
                     number_of_tasks=int(request.POST.get('number'))
@@ -51,10 +50,11 @@ class TrainerApp(View):
 
     def get(self, request):
         if game.number_example==game.total:
-            return redirect('finish')
             game.mistakes = 0
             game.total = len(game.tasks)
             game.number_example = 0
+            return redirect('finish')
+
         try:
             TrainerApp.a, TrainerApp.b, TrainerApp.result = (game.tasks.pop()).values()
             game.number_example+=1
