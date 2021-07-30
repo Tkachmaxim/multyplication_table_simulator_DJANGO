@@ -18,5 +18,11 @@
 <p>{{t}}</p>
 {% endfor %}
 </body>
+<p>all parameters here</p>
+{% for parametr,value in all_parameters.items %}
+{{parametr}} {{value}}
+<br>
+{% endfor %}
+
 </html>
 {% endblock %}

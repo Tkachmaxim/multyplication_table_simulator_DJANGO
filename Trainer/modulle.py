@@ -1,4 +1,12 @@
 import random
+
+all_parameters = { 'permission': True,
+                   'number_of_tasks': 0, 'action': '',
+                   'total': 0, 'number_example': 0, 'mistakes': 0,
+                   'total_for_save': 0, 'mistakes_for_save': 0 }
+
+
+
 task=[]
 gen_task=[]
 
