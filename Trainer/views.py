@@ -36,23 +36,29 @@ class Start(View):
                                                    'result': Game.result, 'number_task': Game.number_example, 'tasks_deb':Game.tasks})
         return render(request, 'index.html')
 
+
+
     def post(self, request):
         if Game.permission==True:
-            if (request.POST.get('number')).isdigit() and int(request.POST.get('number')) > 0 and request.POST.get('difficult') != None:
-                    number_of_tasks=int(request.POST.get('number'))
-                    action=request.POST.get('difficult')
-                    Game.number_of_tasks=number_of_tasks
-                    Game.total=number_of_tasks
-                    Game.action=action
-                    Game.tasks=modulle.choice_number(number_of_tasks,action)
-                    Game.session+=1
-                    Game.permission=False
-                    return redirect('trainer_app')
-            else:
+            try:
+                if int(request.POST.get('number')) > 0 and request.POST.get('difficult') != None:
+                        number_of_tasks=int(request.POST.get('number'))
+                        action=request.POST.get('difficult')
+                        Game.number_of_tasks=number_of_tasks
+                        Game.total=number_of_tasks
+                        Game.action=action
+                        Game.tasks=modulle.choice_number(number_of_tasks,action)
+                        Game.session+=1
+                        Game.permission=False
+            except ValueError:
                 return redirect('start')
         else:
-            return redirect('start')
-        #return redirect('trainer_app')
+            return render(request, 'trainer_app.html', {'a': Game.a, 'b': Game.b,
+                                                        'result': Game.result, 'number_task': Game.number_example,
+                                                        'tasks_deb': Game.tasks})
+
+        return redirect('trainer_app')
+
 
 
 class TrainerApp(View):
@@ -70,6 +76,7 @@ class TrainerApp(View):
         try:
             if int(request.POST.get('answer')) == Game.result:
                 messages.success(request, 'ПРАВИЛЬНО')
+                print('hello')
 
             elif int(request.POST.get('answer')) != Game.result:
                 messages.error(request, 'НЕ ПРАВИЛЬНО')
