@@ -51,7 +51,7 @@ class Start(View):
             else:
                 return redirect('start')
         else:
-            return redirect('trainer_app')
+            return redirect('start')
         #return redirect('trainer_app')
 
 
