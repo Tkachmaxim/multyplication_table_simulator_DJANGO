@@ -32,8 +32,7 @@ class Start(View):
 
     def get(self, request):
         if Game.permission==False:
-            return render(request,'trainer_app.html', {'a': Game.a, 'b': Game.b,
-                                                   'result': Game.result, 'number_task': Game.number_example, 'tasks_deb':Game.tasks})
+            return redirect('trainer_app')
         return render(request, 'index.html')
 
 
@@ -66,8 +65,11 @@ class TrainerApp(View):
     def get(self, request):
         #if Game.number_example>=Game.total:
         #    return redirect('finish')
-        Game.a, Game.b, Game.result = (Game.tasks.pop()).values()
-        Game.number_example+=1
+        try:
+            Game.a, Game.b, Game.result = (Game.tasks.pop()).values()
+            Game.number_example+=1
+        except IndexError:
+            return redirect(request.path)
 
         return render(request,'trainer_app.html', {'a': Game.a, 'b': Game.b,
                                                    'result': Game.result, 'number_task': Game.number_example, 'tasks_deb':Game.tasks})
@@ -76,7 +78,7 @@ class TrainerApp(View):
         try:
             if int(request.POST.get('answer')) == Game.result:
                 messages.success(request, 'ПРАВИЛЬНО')
-                print('hello')
+
 
             elif int(request.POST.get('answer')) != Game.result:
                 messages.error(request, 'НЕ ПРАВИЛЬНО')
@@ -92,13 +94,16 @@ class TrainerApp(View):
 
 class Finish(View):
     def get(self, request):
+        images=['https://upload.wikimedia.org/wikipedia/commons/4/4f/Tesla_Model_S_02_2013.jpg',
+               'https://autoreview.ru/images/Article/1609/Article_160932_860_575.jpg',
+               'https://auto.ironhorse.ru/wp-content/uploads/1977/11/412.jpg']
         result, mistakes = Game.total, Game.mistakes
-        if mistakes/result<=0.2:
-            image='https://upload.wikimedia.org/wikipedia/commons/4/4f/Tesla_Model_S_02_2013.jpg'
-        elif 0.2<mistakes/result<0.4:
-            image='https://autoreview.ru/images/Article/1609/Article_160932_860_575.jpg'
+        if Game.mistakes/Game.total<=0.2:
+            image=images[0]
+        elif 0.2<Game.mistakes/Game.total<0.4:
+            image=images[1]
         else:
-            image='https://auto.ironhorse.ru/wp-content/uploads/1977/11/412.jpg'
+            image=images[2]
         if mistakes==0:
             return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':True})
         elif mistakes>0 and Game.session==1:
