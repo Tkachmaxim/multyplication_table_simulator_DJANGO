@@ -58,8 +58,8 @@ class Start(View):
 class TrainerApp(View):
 
     def get(self, request):
-        if Game.number_example>=Game.total:
-            return redirect('finish')
+        #if Game.number_example>=Game.total:
+        #    return redirect('finish')
         Game.a, Game.b, Game.result = (Game.tasks.pop()).values()
         Game.number_example+=1
 
@@ -75,9 +75,12 @@ class TrainerApp(View):
                 messages.error(request, 'НЕ ПРАВИЛЬНО')
                 Game.mistakes += 1
                 Game.tasks.insert(0,{'a':Game.a, 'b':Game.b, 'result':Game.result})
-
         except ValueError:
             return redirect(request.path)
+
+        if Game.number_example >= Game.total:
+            return redirect('finish')
+
         return redirect(request.path)
 
 class Finish(View):
