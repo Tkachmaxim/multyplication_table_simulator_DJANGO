@@ -58,13 +58,11 @@ class Start(View):
 class TrainerApp(View):
 
     def get(self, request):
-        if Game.number_example==Game.total:
+        if Game.number_example>=Game.total:
             return redirect('finish')
-        try:
-            Game.a, Game.b, Game.result = (Game.tasks.pop()).values()
-            Game.number_example+=1
-        except IndexError:
-            return render(request, 'finish.html', {'result': Game.total, 'mistakes': Game.mistakes})
+        Game.a, Game.b, Game.result = (Game.tasks.pop()).values()
+        Game.number_example+=1
+
         return render(request,'trainer_app.html', {'a': Game.a, 'b': Game.b,
                                                    'result': Game.result, 'number_task': Game.number_example, 'tasks_deb':Game.tasks})
 
