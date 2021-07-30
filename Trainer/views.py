@@ -9,23 +9,20 @@ from Trainer.forms import MyResultForm
 
 class Game:
     permission=True
-    class_counter=0
+    number_of_tasks = 0
+    action = ''
+    tasks = []
+    total = 0
+    number_example = 0
+    mistakes = 0
+    session = 0
+    total_for_save = 0
+    mistakes_for_save = 0
+    mistakes_for_save_example = []
+    a = 0
+    b = 0
+    result = 0
 
-
-    def __init__(self, number_of_tasks, action):
-        self.number_of_tasks=number_of_tasks
-        self.action=action
-        self.tasks=[]
-        self.total=number_of_tasks
-        self.number_example=0
-        self.mistakes= 0
-        self.session=0
-        self.total_for_save=0
-        self.mistakes_for_save=0
-        self.mistakes_for_save_example=[]
-        self.a = 0
-        self.b = 0
-        self.result = 0
 
     def generate_task(self):
         self.tasks=modulle.choice_number(self.number_of_tasks, self.action)
@@ -35,54 +32,53 @@ class Start(View):
 
     def get(self, request):
         if Game.permission==False:
-            return render(request,'trainer_app.html', {'a': game.a, 'b': game.b,
-                                                   'result': game.result, 'number_task': game.number_example, 'tasks_deb':game.tasks})
+            return render(request,'trainer_app.html', {'a': Game.a, 'b': Game.b,
+                                                   'result': Game.result, 'number_task': Game.number_example, 'tasks_deb':Game.tasks})
         return render(request, 'index.html')
 
     def post(self, request):
         if Game.permission==True:
-        #if game.total==0:
+        #if Game.total==0:
             if (request.POST.get('number')).isdigit() and int(request.POST.get('number')) > 0 and request.POST.get('difficult') != None:
                     number_of_tasks=int(request.POST.get('number'))
                     action=request.POST.get('difficult')
-                    global game
-                    game=Game(number_of_tasks=number_of_tasks, action=action)
-                    game.generate_task()
-                    game.session+=1
+                    Game.number_of_tasks=number_of_tasks
+                    Game.total=number_of_tasks
+                    Game.action=action
+                    Game.tasks=modulle.choice_number(number_of_tasks,action)
+                    Game.session+=1
                     Game.permission=False
-                    Game.class_counter+=1
                     return redirect('trainer_app')
             else:
                 return redirect('start')
         else:
             return redirect('trainer_app')
-        #return render(request, 'index.html')
+        #return redirect('trainer_app')
 
 
 class TrainerApp(View):
 
     def get(self, request):
-        global game
-        if game.number_example==game.total:
+        if Game.number_example==Game.total:
             return redirect('finish')
 
         try:
-            game.a, game.b, game.result = (game.tasks.pop()).values()
-            game.number_example+=1
+            Game.a, Game.b, Game.result = (Game.tasks.pop()).values()
+            Game.number_example+=1
         except IndexError:
-            return render(request, 'finish.html', {'result': game.total, 'mistakes': game.mistakes})
-        return render(request,'trainer_app.html', {'a': game.a, 'b': game.b,
-                                                   'result': game.result, 'number_task': game.number_example, 'tasks_deb':game.tasks, 'counter':Game.class_counter })
+            return render(request, 'finish.html', {'result': Game.total, 'mistakes': Game.mistakes})
+        return render(request,'trainer_app.html', {'a': Game.a, 'b': Game.b,
+                                                   'result': Game.result, 'number_task': Game.number_example, 'tasks_deb':Game.tasks})
 
     def post(self, request):
         try:
-            if int(request.POST.get('answer')) == game.result:
+            if int(request.POST.get('answer')) == Game.result:
                 messages.success(request, 'ПРАВИЛЬНО')
 
-            elif int(request.POST.get('answer')) != game.result:
+            elif int(request.POST.get('answer')) != Game.result:
                 messages.error(request, 'НЕ ПРАВИЛЬНО')
-                game.mistakes += 1
-                game.tasks.insert(0,{'a':game.a, 'b':game.b, 'result':game.result})
+                Game.mistakes += 1
+                Game.tasks.insert(0,{'a':Game.a, 'b':Game.b, 'result':Game.result})
 
         except ValueError:
             return redirect(request.path)
@@ -93,8 +89,7 @@ class TrainerApp(View):
 
 class Finish(View):
     def get(self, request):
-
-        result, mistakes = game.total, game.mistakes
+        result, mistakes = Game.total, Game.mistakes
 
 
         if mistakes/result<=0.2:
@@ -104,33 +99,42 @@ class Finish(View):
         else:
             image='https://auto.ironhorse.ru/wp-content/uploads/1977/11/412.jpg'
         if mistakes==0:
-            game.total_for_save = game.total
-            game.mistakes_for_save = game.mistakes
-            game.mistakes_for_save_example = tuple(game.tasks)
             return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':True})
-        elif mistakes>0 and game.session==1:
-            game.tasks*=5
-            game.session+=1
-        random.shuffle(game.tasks)
-        game.total, game.mistakes, game.number_example = len(game.tasks), 0, 0
+        elif mistakes>0 and Game.session==1:
+            Game.tasks*=5
+            Game.session+=1
+        random.shuffle(Game.tasks)
+        Game.total, Game.mistakes, Game.number_example = len(Game.tasks), 0, 0
         return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':False})
 
 class Enter_Result(View):
+
     def get(self, request):
         form=MyResultForm
         return render(request, 'form.html', {'form':form})
 
     def post(self, request):
         form=MyResultForm(request.POST)
+
         if form.is_valid():
+            total_save=Game.total
+            total_mistakes_save=Game.mistakes
+            example_mmistakes_save=tuple(Game.tasks)
             result=form.save(commit=False)
-            result.total_tasks=game.total_for_save
-            result.mistakes=game.mistakes_for_save
-            result.examples_of_mistakes=game.mistakes_for_save_example
+            result.total_tasks = total_save
+            result.mistakes = total_mistakes_save
+            result.examples_of_mistakes = example_mmistakes_save
             result.save()
-            print('this is taks', game.tasks)
-            game.total=0
             Game.permission=True
+            Game.number_of_tasks = 0
+            Game.action = ''
+            Game.tasks = []
+            Game.total = 0
+            Game.number_example = 0
+            Game.mistakes = 0
+            Game.session = 0
+            Game.total_for_save = 0
+            Game.mistakes_for_save = 0
         return redirect('start')
 
 
