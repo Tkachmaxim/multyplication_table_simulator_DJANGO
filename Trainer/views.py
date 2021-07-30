@@ -90,8 +90,6 @@ class TrainerApp(View):
 class Finish(View):
     def get(self, request):
         result, mistakes = Game.total, Game.mistakes
-
-
         if mistakes/result<=0.2:
             image='https://upload.wikimedia.org/wikipedia/commons/4/4f/Tesla_Model_S_02_2013.jpg'
         elif 0.2<mistakes/result<0.4:
@@ -135,7 +133,9 @@ class Enter_Result(View):
             Game.session = 0
             Game.total_for_save = 0
             Game.mistakes_for_save = 0
-        return redirect('start')
+            return redirect('start')
+        return redirect('enter_result')
+
 
 
 
