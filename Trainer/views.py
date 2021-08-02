@@ -9,6 +9,8 @@ all_parameters = { 'permission': True,
                    'number_of_tasks': 0, 'action': '',
                    'total': 0, 'number_example': 0, 'mistakes': 0,
                    'total_for_save': 0, 'mistakes_for_save': 0, 'a': 0,'b':0, 'result':0, 'session':0}
+
+
 class Start(View):
 
     def get(self, request):
@@ -93,6 +95,7 @@ class Finish(View):
         random.shuffle(all_parameters['tasks'])
         all_parameters['total'], all_parameters['mistakes'], all_parameters['number_example'] = len(all_parameters['tasks']), 0, 0
         return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':False, 'all_parameters':all_parameters})
+
 class Enter_Result(View):
 
     def get(self, request):
@@ -111,12 +114,12 @@ class Enter_Result(View):
             result.mistakes = total_mistakes_save
             result.examples_of_mistakes = example_mmistakes_save
             result.save()
-            all_parameters.clear()
-            print(all_parameters)
             all_parameters['permission']=True
+            all_parameters['number_of_tasks'],all_parameters['total'],all_parameters['number_example'],all_parameters['mistakes']=0,0,0,0
+            all_parameters['total_for_save'], all_parameters['mistakes_for_save'], all_parameters['a'], all_parameters['b'], \
+            all_parameters['result'], all_parameters['session']=0,0,0,0,0,0
             return redirect('start')
         return redirect('enter_result')
-
 
 
 
