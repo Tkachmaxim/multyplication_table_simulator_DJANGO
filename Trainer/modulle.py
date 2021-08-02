@@ -11,6 +11,7 @@ task=[]
 gen_task=[]
 
 def choice_number(n,action):
+    task.clear()
     if action=='multi':
         num=0
         while num!=n:
