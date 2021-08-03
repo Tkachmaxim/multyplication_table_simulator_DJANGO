@@ -116,7 +116,7 @@ class Finish(View):
 
 
         random.shuffle(data.tasks)
-        data.total, data.mistakes, data.number_example = len(data.tasks), 0, 0
+        data.total, data.mistakes, data.number_example = len(data.tasks), 0, 1
         data.save()
         return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':False})
 
