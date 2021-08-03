@@ -35,11 +35,15 @@ class Start(View):
                                   mistakes=0,  total_for_save=0, mistakes_for_save=0)
                         game.save()
 
+                        return redirect('trainer_app')
+
             except ValueError:
                 return redirect('start')
 
+            return render(request, 'index.html')
 
-            return redirect('trainer_app')
+
+
 
 
 
