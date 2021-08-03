@@ -5,7 +5,7 @@ from Trainer.models import Result
 class MyResultForm(ModelForm):
     class Meta:
         model=Result
-        exclude=('total_tasks', 'mistakes', 'examples_of_mistakes',)
+        exclude=('total_tasks', 'mistakes', 'examples_of_mistakes', 'time')
         labels={'name':'Введи сюда свое имя, УЧЕНИК',
                 }
 

@@ -1,33 +1,37 @@
 import random
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.views import View
 from Trainer import modulle
 from Trainer.models import Game
 from Trainer.forms import MyResultForm
 
-'''all_parameters = { 'permission': True,
-                   'number_of_tasks': 0, 'action': '',
-                   'total': 0, 'number_example': 0, 'mistakes': 0,
-                   'total_for_save': 0, 'mistakes_for_save': 0, 'a': 0,'b':0, 'result':0, 'session':0}
 
-'''
+
+
 class Start(View):
 
+
     def get(self, request):
+        try:
+            game=Game.objects.order_by('id')[0]
+            if game.permission==False:
+                return redirect('trainer_app')
+        except IndexError:
+            return render(request, 'index.html')
+
         return render(request, 'index.html')
 
 
 
     def post(self, request):
-            data=[]
             try:
                 if int(request.POST.get('number')) > 0 and request.POST.get('difficult') != None:
                         number_of_tasks=int(request.POST.get('number'))
                         action=request.POST.get('difficult')
-                        data.extend(modulle.choice_number(number_of_tasks,action))
                         game=Game(permission=False, number_of_tasks=number_of_tasks, total=number_of_tasks,
-                                  action=action, tasks=data, session=1,
+                                  action=action, tasks=modulle.choice_number(number_of_tasks,action), session=1,
                                   mistakes=0,  total_for_save=0, mistakes_for_save=0)
                         game.save()
 
@@ -49,10 +53,10 @@ class TrainerApp(View):
             all_tasks = data.tasks
             print(all_tasks)
             a, b, result = all_tasks[:].pop().values()
-            data.number_example+=1
+
         except IndexError:
             return redirect(request.path)
-        data.save()
+
 
         return render(request,'trainer_app.html', {'a': a, 'b': b,
                                                    'result': result, 'number_task': data.number_example})
@@ -74,11 +78,13 @@ class TrainerApp(View):
         except ValueError:
             return render(request, 'trainer_app.html', { 'a': a, 'b': b,
                                                          'result': result, 'number_task': data.number_example })
-        data.save()
 
 
-        if data.number_example == data.total:
+        data.number_example += 1
+        if data.number_example == data.total+1:
+            data.save()
             return redirect('finish')
+        data.save()
 
 
         return redirect(request.path)
@@ -98,13 +104,13 @@ class Finish(View):
             image=images[2]
         if mistakes==0:
             return render(request, 'finish.html', {'result': result, 'mistakes': mistakes, 'image':image, 'button':True})
-        print('mist',mistakes)
-        print('session',data.session)
+
 
         if mistakes>0 and data.session==1:
+            data.mistakes_examples=data.tasks[:]
             data.tasks*=5
             data.session+=1
-            print(data.tasks)
+
 
 
         random.shuffle(data.tasks)
@@ -125,26 +131,15 @@ class Enter_Result(View):
         if form.is_valid():
             total_save=data.total
             total_mistakes_save=data.mistakes
-            example_mmistakes_save=tuple(data.tasks)
+
             result=form.save(commit=False)
             result.total_tasks = total_save
             result.mistakes = total_mistakes_save
-            result.examples_of_mistakes = example_mmistakes_save
+            result.examples_of_mistakes = data.mistakes_examples
             result.save()
             data.delete()
             return redirect('start')
 
         return redirect('enter_result')
 
-
-
-
-
-
-'''
-class WorkOnMistakes(View):
-    def post(self, request):
-        mistake=TrainerApp.mistakes.pop()
-        return render(request, 'trainer_app.html', {'a':mistake['a'], 'b':mistake['b'], 'result':mistake['result']})
-'''
 

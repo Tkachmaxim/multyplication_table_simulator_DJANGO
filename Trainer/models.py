@@ -5,13 +5,15 @@ class Result(models.Model):
     total_tasks=models.IntegerField()
     mistakes=models.IntegerField()
     examples_of_mistakes=models.TextField()
+    time=models.DateTimeField(auto_now=True)
 
 class Game(models.Model):
-    permission=models.BooleanField()
+    permission=models.BooleanField(default=True)
     number_of_tasks=models.IntegerField()
     total=models.IntegerField()
-    number_example=models.IntegerField(default=0)
+    number_example=models.IntegerField(default=1)
     mistakes=models.IntegerField()
+    mistakes_examples=models.JSONField(default=[])
     tasks=models.JSONField(default=[])
     total_for_save=models.IntegerField()
     mistakes_for_save=models.IntegerField()
