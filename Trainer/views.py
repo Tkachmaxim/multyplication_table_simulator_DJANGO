@@ -51,11 +51,10 @@ class TrainerApp(View):
         try:
             data=Game.objects.order_by('id')[0]
             all_tasks = data.tasks
-            print(all_tasks)
             a, b, result = all_tasks[:].pop().values()
 
         except IndexError:
-            return redirect(request.path)
+            return redirect('finish')
 
 
         return render(request,'trainer_app.html', {'a': a, 'b': b,
@@ -64,7 +63,10 @@ class TrainerApp(View):
     def post(self, request):
         try:
             data = Game.objects.order_by('id')[0]
-            a, b, result = data.tasks.pop().values()
+            try:
+                a, b, result = data.tasks.pop().values()
+            except IndexError:
+                return redirect('finish')
 
             if int(request.POST.get('answer')) == int(result):
                 messages.success(request, 'ПРАВИЛЬНО')
