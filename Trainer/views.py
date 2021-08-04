@@ -143,7 +143,9 @@ class Enter_Result(View):
             result.mistakes = total_mistakes_save
             result.examples_of_mistakes = data.mistakes_examples
             result.save()
-            data.delete()
+            data.save()
+            Game.objects.filter(permission=False).delete()
+
             return redirect('start')
 
         return redirect('enter_result')
