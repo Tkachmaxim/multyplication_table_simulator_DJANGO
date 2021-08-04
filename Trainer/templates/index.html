@@ -5,13 +5,13 @@
 
 <form method="post" action=''>
     {% csrf_token %}
-    <input autofocus name="number" height="30">
+    <input autofocus name="number" height="30" type="number">
     <input type="submit" value="Отправить">
       <p>Выберите что-то одно:</p>
 
   <div>
     <input type="radio" id="contactChoice1"
-     name="difficult" value="multi">
+     name="difficult" value="multi" checked="checked">
     <label for="contactChoice1">Только умножение</label>
       <br>
     <input type="radio" id="contactChoice2"
@@ -23,12 +23,6 @@
     <label for="contactChoice3">Только деление</label>
 </form>
 </body>
-
-<p>all parameters here</p>
-{% for parametr,value in all_parameters.items %}
-{{parametr}} {{value}}
-<br>
-{% endfor %}
 
 {% endblock %}
 
