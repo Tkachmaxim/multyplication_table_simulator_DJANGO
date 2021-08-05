@@ -56,11 +56,11 @@ class TrainerApp(View):
             data=Game.objects.order_by('id')[0]
             all_tasks = data.tasks
             a, b, result = all_tasks[:].pop().values()
-
         except IndexError:
             return redirect('finish')
+            data.save()
 
-
+        data.save()
         return render(request,'trainer_app.html', {'a': a, 'b': b,
                                                    'result': result, 'number_task': data.number_example})
 
@@ -141,6 +141,7 @@ class Enter_Result(View):
             result=form.save(commit=False)
             result.total_tasks = total_save
             result.mistakes = total_mistakes_save
+            result.number_of_sessions=data.session
             result.examples_of_mistakes = data.mistakes_examples
             result.save()
             data.save()

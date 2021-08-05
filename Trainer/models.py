@@ -4,8 +4,10 @@ class Result(models.Model):
     name=models.CharField(max_length=20)
     total_tasks=models.IntegerField()
     mistakes=models.IntegerField()
+    number_of_sessions=models.IntegerField(default=0)
     examples_of_mistakes=models.TextField()
     time=models.DateTimeField(auto_now=True)
+
 
 class Game(models.Model):
     permission=models.BooleanField(default=True)
