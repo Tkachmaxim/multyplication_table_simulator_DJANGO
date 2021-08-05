@@ -3,7 +3,7 @@ from .models import Result, Game
 
 @admin.register(Result)
 class Result(admin.ModelAdmin):
-    list_display = ('name', 'total_tasks', 'mistakes', 'examples_of_mistakes', 'time')
+    list_display = ('name', 'total_tasks', 'mistakes', 'examples_of_mistakes', 'number_of_sessions','time')
 
 @admin.register(Game)
 class Game(admin.ModelAdmin):
