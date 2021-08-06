@@ -10,7 +10,7 @@ class Result(models.Model):
 
 
 class Game(models.Model):
-    permission=models.BooleanField(default=True)
+    permission=models.BooleanField(default=True) # forbid start again if task dont complete
     number_of_tasks=models.IntegerField()
     total=models.IntegerField()
     number_example=models.IntegerField(default=1)
