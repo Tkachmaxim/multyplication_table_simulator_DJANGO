@@ -114,10 +114,9 @@ class Finish(View):
 
         if mistakes>0 and data.session==1:
             data.mistakes_examples=data.tasks[:]
+            data.total_for_save=result
             data.tasks*=5
             data.session+=1
-
-
 
         random.shuffle(data.tasks)
         data.total, data.mistakes, data.number_example = len(data.tasks), 0, 1
@@ -135,7 +134,7 @@ class Enter_Result(View):
         data=Game.objects.order_by('id')[0]
 
         if form.is_valid():
-            total_save=data.total
+            total_save=data.total_for_save
             total_mistakes_save=data.mistakes
 
             result=form.save(commit=False)
