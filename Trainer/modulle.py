@@ -1,11 +1,5 @@
 import random
 
-all_parameters = { 'permission': True,
-                   'number_of_tasks': 0, 'action': '',
-                   'total': 0, 'number_example': 0, 'mistakes': 0,
-                   'total_for_save': 0, 'mistakes_for_save': 0 }
-
-
 
 task=[]
 gen_task=[]
@@ -41,8 +35,8 @@ def choice_number(n,action):
         return task
 
 def set_multy():
-    a = random.randrange(2, 10, 1)
-    b = random.randrange(2, 10, 1)
+    a = random.randrange(3, 10, 1)
+    b = random.randrange(3, 10, 1)
     task_ = str(a) + ' × ' + str(b)
     gen_task = dict(a=task_, b=b, result=a * b)
     return gen_task
