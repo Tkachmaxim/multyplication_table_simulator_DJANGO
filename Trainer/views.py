@@ -7,22 +7,24 @@ from Trainer import modulle
 from Trainer.models import Game
 from Trainer.forms import MyResultForm
 
-
+class Start_App(View):
+    def get(self, request):
+        print('index')
+        return render(request, 'index.html')
 
 
 class Start(View):
-
-
     def get(self, request):
+
         try:
+            print('doing query')
             game=Game.objects.order_by('id')[0]
+            print(Game.objects.order_by('id')[0])
             if game.permission==False:
-                return redirect('trainer_app')
+                return redirect('mathtrainer:trainer_app')
         except IndexError:
-            return render(request, 'index.html')
-
-        return render(request, 'index.html')
-
+            print('have index error')
+            return render(request, 'mathtrainer.html')
 
 
     def post(self, request):
@@ -35,29 +37,24 @@ class Start(View):
                                   mistakes=0,  total_for_save=0, mistakes_for_save=0)
                         game.save()
 
-                        return redirect('trainer_app')
+                        return redirect('mathtrainer:trainer_app')
 
             except ValueError:
-                return redirect('start')
+                return render(request, 'index.html')
 
-            return render(request, 'index.html')
-
-
-
-
+            return render(request, 'mathtrainer.html')
 
 
 class TrainerApp(View):
-
     def get(self, request):
         #if number_example>=total:
-        #    return redirect('finish')
+        #return redirect('finish')
         try:
             data=Game.objects.order_by('id')[0]
             all_tasks = data.tasks
             a, b, result = all_tasks[:].pop().values()
         except IndexError:
-            return redirect('finish')
+            return redirect('mathtrainer:finish')
             data.save()
 
         data.save()
@@ -70,7 +67,7 @@ class TrainerApp(View):
             try:
                 a, b, result = data.tasks.pop().values()
             except IndexError:
-                return redirect('finish')
+                return redirect('mathtrainer:finish')
 
             if int(request.POST.get('answer')) == int(result):
                 messages.success(request, 'ПРАВИЛЬНО')
@@ -89,7 +86,7 @@ class TrainerApp(View):
         data.number_example += 1
         if data.number_example == data.total+1:
             data.save()
-            return redirect('finish')
+            return redirect('mathtrainer:finish')
         data.save()
 
 
@@ -136,7 +133,6 @@ class Enter_Result(View):
         if form.is_valid():
             total_save=data.total_for_save
             total_mistakes_save=data.mistakes
-
             result=form.save(commit=False)
             result.total_tasks = total_save
             result.mistakes = total_mistakes_save
@@ -148,6 +144,6 @@ class Enter_Result(View):
 
             return redirect('start')
 
-        return redirect('enter_result')
+        return redirect('mathtrainer:enter_result')
 
 

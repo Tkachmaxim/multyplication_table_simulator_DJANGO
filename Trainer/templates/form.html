@@ -1,7 +1,7 @@
 {% extends 'base.html'%}
 {% block trainer %}
 <body>
-<form method="post", action={% url 'enter_result' %}>
+<form method="post", action={% url 'mathtrainer:enter_result' %}>
   {{form.as_p}}
     {% csrf_token %}
   <input type="submit" value="Отправить">

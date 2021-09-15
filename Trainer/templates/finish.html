@@ -6,9 +6,9 @@
 <br>
 <h1>Не правильных: {{mistakes}}</h1>
 {% if button %}
-<a href={% url 'enter_result' %} class="btn btn-info mb-2">Ввести результаты</a>
+<a href={% url 'mathtrainer:enter_result' %} class="btn btn-info mb-2">Ввести результаты</a>
 {% else %}
-<a href={% url 'trainer_app' %} class="btn btn-info mb-2">Работа над ошибками</a>
+<a href={% url 'mathtrainer:trainer_app' %} class="btn btn-info mb-2">Работа над ошибками</a>
 {% endif %}
 <p>
 <img src="{{image}}" width="300" height="300">

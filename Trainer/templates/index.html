@@ -1,31 +1,6 @@
 {% extends 'base.html'%}
 {% block trainer %}
-
-<h1>Сколько примеров?</h1>
-
-<form method="post" action=''>
-    {% csrf_token %}
-    <input autofocus name="number" height="30" type="number">
-    <input type="submit" value="Отправить">
-      <p>Выберите что-то одно:</p>
-
-  <div>
-    <input type="radio" id="contactChoice1"
-     name="difficult" value="multi" checked="checked">
-    <label for="contactChoice1">Только умножение</label>
-      <br>
-    <input type="radio" id="contactChoice2"
-     name="difficult" value="complex">
-    <label for="contactChoice2">Умножение и деление</label>
-    <br>
-    <input type="radio" id="contactChoice3"
-     name="difficult" value="divide">
-    <label for="contactChoice3">Только деление</label>
-</form>
-</body>
-
+<a href={% url "mathtrainer:math_start" %}><button>Таблица умножения</button></a>
+<button>Английский язык Артем</button>
+<button>Английский язык Максим</button>
 {% endblock %}
-
-
-
-</html>
